@@ -104,8 +104,8 @@
         <button class="btn" id="startBtn">START</button>
       </div>
       <div class="icon-row">
-        <button class="icon-btn" id="muteBtn" title="Sound">🔊</button>
-        <button class="icon-btn" id="totalToggleBtn" title="Total time">👁</button>
+        <button class="icon-btn" id="muteBtn" title="Sound">♪</button>
+        <button class="icon-btn" id="totalToggleBtn" title="Total time">Σ</button>
       </div>
     </div>
   </div>
@@ -207,7 +207,6 @@
     totalTimeEl.textContent = `TOTAL ${elapsedInCycleMinutes()} / ${totalCycleMinutes()}`;
     totalTimeEl.style.display = state.showTotal ? 'block' : 'none';
     document.getElementById('totalToggleBtn').classList.toggle('off', !state.showTotal);
-    document.getElementById('muteBtn').textContent = state.muted ? '🔇' : '🔊';
     document.getElementById('muteBtn').classList.toggle('off', state.muted);
     renderCycleDots();
     document.title = state.running ? `${m}:${s} - ${modeLabel.textContent}` : 'Pomodoro';
