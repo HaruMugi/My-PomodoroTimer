@@ -5,7 +5,7 @@
 <title>Pomodoro</title>
 <style>
   :root {
-    --bg: transparent;
+    --bg: #191919;
     --panel: #1A1512;
     --ring: #E8D5A8;
     --accent: #E8D5A8;
@@ -21,35 +21,37 @@
     font-family: 'Georgia', 'Times New Roman', serif; color: var(--text);
   }
   .card {
-    width: 340px; margin: 0 auto; padding: 26px 24px 20px;
+    width: 380px; margin: 0 auto; padding: 18px 20px 16px;
     background: var(--panel); border-radius: 4px; text-align: center; position: relative;
   }
-  .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+  .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; }
   .mode-btn {
     background: none; border: 1px solid var(--accent-dim); color: var(--text-muted);
-    font-family: inherit; font-size: 10px; letter-spacing: 0.1em; padding: 5px 10px;
+    font-family: inherit; font-size: 9px; letter-spacing: 0.1em; padding: 4px 9px;
     border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
   }
   .mode-btn.active { border-color: var(--accent); color: var(--accent); }
-  .cycle-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
-  .cdot { width: 7px; height: 7px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
+  .main-row { display: flex; align-items: center; justify-content: center; gap: 20px; }
+  .cycle-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 8px; }
+  .cdot { width: 6px; height: 6px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
   .cdot.filled { background: var(--accent); border-color: var(--accent); }
   .cdot.current { box-shadow: 0 0 0 2px var(--sub); }
-  .ring-wrap { position: relative; width: 210px; height: 210px; margin: 0 auto 10px; }
+  .ring-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
   svg { transform: none; }
   .ring-track { stroke: var(--track); fill: none; stroke-width: 4; }
-  .ring-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s ease; }
+  .ring-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: d 1s linear, stroke 0.3s ease; }
   .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .time { font-size: 44px; letter-spacing: 0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
-  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.25em; color: var(--accent); text-transform: uppercase; margin-top: 6px; opacity: 0.8; }
-  .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; font-variant-numeric: tabular-nums; }
-  .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 6px; }
-  .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.15em; padding: 9px 20px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
+  .time { font-size: 26px; letter-spacing: 0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-top: 3px; opacity: 0.8; }
+  .right-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .controls { display: flex; justify-content: center; gap: 8px; }
+  .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.12em; padding: 7px 16px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
   .btn:hover { background: var(--accent); color: var(--panel); }
-  .btn.ghost { border-color: var(--accent-dim); color: var(--text-muted); padding: 9px 14px; }
+  .btn.ghost { border-color: var(--accent-dim); color: var(--text-muted); padding: 7px 12px; }
   .btn.ghost:hover { background: var(--accent-dim); color: var(--text); }
-  .icon-row { display: flex; justify-content: center; gap: 16px; margin-top: 10px; }
-  .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; opacity: 0.55; transition: opacity 0.2s ease; padding: 2px; }
+  .icon-row { display: flex; justify-content: center; gap: 14px; }
+  .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; opacity: 0.55; transition: opacity 0.2s ease; padding: 2px; }
   .icon-btn:hover { opacity: 1; }
   .icon-btn.off { opacity: 0.3; }
   .gear { position: absolute; top: 10px; right: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; opacity: 0.6; }
@@ -81,25 +83,29 @@
     <button class="mode-btn" data-mode="break">BREAK</button>
     <button class="mode-btn" data-mode="longBreak">LONG</button>
   </div>
-  <div class="cycle-dots" id="cycleDots"></div>
-  <div class="ring-wrap">
-    <svg width="210" height="210" viewBox="0 0 210 210">
-      <circle class="ring-track" cx="105" cy="105" r="95"></circle>
-      <path class="ring-progress" id="ringProgress" d=""></path>
-    </svg>
-    <div class="time-display">
-      <div class="time" id="timeText">25:00</div>
-      <div class="label" id="modeLabel">FOCUS</div>
+  <div class="main-row">
+    <div class="ring-wrap">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle class="ring-track" cx="65" cy="65" r="58"></circle>
+        <path class="ring-progress" id="ringProgress" d=""></path>
+      </svg>
+      <div class="time-display">
+        <div class="time" id="timeText">25:00</div>
+        <div class="label" id="modeLabel">FOCUS</div>
+      </div>
     </div>
-  </div>
-  <div class="total-time" id="totalTime">TOTAL 0 / 120</div>
-  <div class="controls">
-    <button class="btn ghost" id="resetBtn">RESET</button>
-    <button class="btn" id="startBtn">START</button>
-  </div>
-  <div class="icon-row">
-    <button class="icon-btn" id="muteBtn" title="Sound">🔊</button>
-    <button class="icon-btn" id="totalToggleBtn" title="Total time">👁</button>
+    <div class="right-col">
+      <div class="cycle-dots" id="cycleDots"></div>
+      <div class="total-time" id="totalTime">TOTAL 0 / 120</div>
+      <div class="controls">
+        <button class="btn ghost" id="resetBtn">RESET</button>
+        <button class="btn" id="startBtn">START</button>
+      </div>
+      <div class="icon-row">
+        <button class="icon-btn" id="muteBtn" title="Sound">🔊</button>
+        <button class="icon-btn" id="totalToggleBtn" title="Total time">👁</button>
+      </div>
+    </div>
   </div>
   <div class="settings" id="settings">
     <div class="section-title">Time (min)</div>
@@ -113,6 +119,7 @@
     <div class="preset-row"><button class="small-btn" id="savePresetBtn" style="width:100%">Save as preset</button></div>
 
     <div class="section-title">Colors</div>
+    <div class="row"><span>Background</span><div class="color-input-group"><input type="color" id="bgColor" value="#191919"><input type="text" class="hex" id="bgColorHex" value="#191919"></div></div>
     <div class="row"><span>Ring</span><div class="color-input-group"><input type="color" id="ringColor" value="#E8D5A8"><input type="text" class="hex" id="ringColorHex" value="#E8D5A8"></div></div>
     <div class="row"><span>Sub (break ring)</span><div class="color-input-group"><input type="color" id="subColor" value="#1B3A4B"><input type="text" class="hex" id="subColorHex" value="#1B3A4B"></div></div>
     <div class="row"><span>Accent</span><div class="color-input-group"><input type="color" id="accentColor" value="#E8D5A8"><input type="text" class="hex" id="accentColorHex" value="#E8D5A8"></div></div>
@@ -131,7 +138,7 @@
   const DEFAULT_SETTINGS = {
     workMin: 25, breakMin: 5, longBreakMin: 15, sessionsBeforeLong: 4,
     muted: false, showTotal: true,
-    colors: { ring: '#E8D5A8', sub: '#1B3A4B', accent: '#E8D5A8', text: '#F0E6D8', panel: '#1A1512', track: '#2A231D' }
+    colors: { bg: '#191919', ring: '#E8D5A8', sub: '#1B3A4B', accent: '#E8D5A8', text: '#F0E6D8', panel: '#1A1512', track: '#2A231D' }
   };
 
   const state = {
@@ -168,7 +175,7 @@
   function progressArcPath(remainingFraction) {
     const elapsedAngle = (1 - remainingFraction) * 360;
     if (360 - elapsedAngle <= 0.05) return '';
-    return describeArc(105, 105, 95, elapsedAngle, 360);
+    return describeArc(65, 65, 58, elapsedAngle, 360);
   }
 
   function durationFor(mode) {
@@ -316,7 +323,7 @@
   });
 
   // colors: picker <-> hex text, both ways, plus CSS var + render
-  const colorIds = ['ring', 'sub', 'accent', 'text', 'panel', 'track'];
+  const colorIds = ['bg', 'ring', 'sub', 'accent', 'text', 'panel', 'track'];
   function applyColor(key, hex) {
     root.style.setProperty('--' + key, hex);
   }
