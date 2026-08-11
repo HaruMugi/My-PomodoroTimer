@@ -56,14 +56,19 @@
   .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; opacity: 0.55; transition: opacity 0.2s ease; padding: 2px; }
   .icon-btn:hover { opacity: 1; }
   .icon-btn.off { opacity: 0.3; }
-  .gear { position: absolute; top: 10px; left: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; opacity: 0.6; }
+  .gear {
+    position: absolute; top: 15px; left: 12px; height: 21px; line-height: 19px;
+    background: none; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 12px; opacity: 0.6; display: flex; align-items: center;
+  }
   .gear:hover { opacity: 1; }
   .settings { display: none; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--track); text-align: left; font-family: 'Helvetica Neue', Arial, sans-serif; }
   .settings.open { display: block; }
-  .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em; }
+  .row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em; }
+  .row > span { flex: 0 0 auto; text-align: left; min-width: 60px; }
   .stepper { display: flex; align-items: center; gap: 3px; }
   .stepper button { width: 16px; height: 16px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); cursor: pointer; border-radius: 2px; font-size: 10px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
-  .row input[type="number"] { width: 32px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; padding: 2px 3px; border-radius: 2px; text-align: center; }
+  .row input[type="number"] { width: 40px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; padding: 2px 3px; border-radius: 2px; text-align: center; }
   .color-input-group { display: flex; align-items: center; gap: 4px; }
   .row input[type="color"] { width: 22px; height: 20px; border: 1px solid var(--accent-dim); background: none; border-radius: 2px; padding: 0; cursor: pointer; }
   .row input[type="text"].hex { width: 56px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; padding: 2px 4px; border-radius: 2px; font-size: 9px; letter-spacing: 0.02em; text-transform: uppercase; }
