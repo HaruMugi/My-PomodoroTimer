@@ -17,12 +17,12 @@
   }
   * { box-sizing: border-box; }
   html, body {
-    margin: 0; padding: 0; background: var(--bg); width: 100%; height: 100%; overflow: hidden;
+    margin: 0; padding: 0; background: var(--bg); width: 100%; min-height: 100%; overflow-x: hidden; overflow-y: auto;
     font-family: 'Georgia', 'Times New Roman', serif; color: var(--text);
-    display: flex; align-items: center; justify-content: flex-start;
+    display: flex; align-items: flex-start; justify-content: flex-start;
   }
   .card {
-    width: 290px; margin: 0; padding: 26px 20px 15px 18px;
+    width: 340px; margin: 0; padding: 26px 22px 15px 20px;
     background: var(--panel); border-radius: 4px; text-align: center; position: relative;
     transform-origin: top left; flex-shrink: 0;
   }
@@ -452,12 +452,10 @@
   function fitScale() {
     cardEl.style.transform = 'scale(1)';
     const baseW = cardEl.offsetWidth;
-    const baseH = cardEl.offsetHeight;
-    if (!baseW || !baseH) return;
+    if (!baseW) return;
     const availW = document.documentElement.clientWidth;
-    const availH = document.documentElement.clientHeight;
-    const scale = Math.min(availW / baseW, availH / baseH, 3);
-    cardEl.style.transform = `scale(${Math.max(scale, 0.3)})`;
+    const scale = availW / baseW;
+    cardEl.style.transform = `scale(${Math.min(Math.max(scale, 0.3), 3)})`;
   }
   window.addEventListener('resize', fitScale);
   if (window.ResizeObserver) {
