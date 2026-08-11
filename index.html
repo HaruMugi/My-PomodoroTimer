@@ -22,30 +22,30 @@
     display: flex; align-items: flex-start; justify-content: flex-start;
   }
   .card {
-    width: 340px; margin: 0; padding: 15px 22px 14px 20px;
+    width: 400px; margin: 0; padding: 15px 22px 14px 20px;
     background: var(--panel); border-radius: 4px; text-align: center; position: relative;
     transform-origin: top left; flex-shrink: 0;
   }
-  .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; margin-left: 28px; }
+  .mode-row { display: flex; justify-content: center; gap: 6px; }
   .mode-btn {
     background: none; border: 1px solid var(--accent-dim); color: var(--text-muted);
     font-family: inherit; font-size: 9px; letter-spacing: 0.1em; padding: 4px 9px;
     border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
   }
   .mode-btn.active { border-color: var(--accent); color: var(--accent); }
-  .main-row { display: flex; align-items: center; justify-content: center; gap: 16px; }
-  .cycle-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 0; }
+  .main-row { display: flex; align-items: stretch; justify-content: center; gap: 20px; margin-top: 26px; }
+  .cycle-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 6px; }
   .cdot { width: 6px; height: 6px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
   .cdot.filled { background: var(--accent); border-color: var(--accent); }
   .cdot.current { box-shadow: 0 0 0 2px var(--sub); }
-  .ring-wrap { position: relative; width: 122px; height: 122px; flex-shrink: 0; }
+  .ring-wrap { position: relative; width: 196px; height: 196px; flex-shrink: 0; }
   svg { transform: none; }
   .ring-track { stroke: var(--track); fill: none; stroke-width: 4; }
   .ring-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: d 1s linear, stroke 0.3s ease; }
   .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .time { font-size: 25px; letter-spacing: 0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
-  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-top: 3px; opacity: 0.8; }
-  .right-col { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .time { font-size: 34px; letter-spacing: 0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-top: 4px; opacity: 0.8; }
+  .right-col { display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
   .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.04em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
   .controls { display: flex; justify-content: center; gap: 6px; }
   .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.1em; padding: 9px 14px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
@@ -85,15 +85,10 @@
 
 <div class="card" id="card">
   <button class="gear" id="gearBtn" title="Settings">&#9881;</button>
-  <div class="mode-row">
-    <button class="mode-btn active" data-mode="work">WORK</button>
-    <button class="mode-btn" data-mode="break">BREAK</button>
-    <button class="mode-btn" data-mode="longBreak">LONG</button>
-  </div>
   <div class="main-row">
     <div class="ring-wrap">
-      <svg width="122" height="122" viewBox="0 0 122 122">
-        <circle class="ring-track" cx="61" cy="61" r="54"></circle>
+      <svg width="196" height="196" viewBox="0 0 196 196">
+        <circle class="ring-track" cx="98" cy="98" r="88"></circle>
         <path class="ring-progress" id="ringProgress" d=""></path>
       </svg>
       <div class="time-display">
@@ -102,8 +97,15 @@
       </div>
     </div>
     <div class="right-col">
-      <div class="cycle-dots" id="cycleDots"></div>
-      <div class="total-time" id="totalTime">TOTAL 0 / 120</div>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="work">WORK</button>
+        <button class="mode-btn" data-mode="break">BREAK</button>
+        <button class="mode-btn" data-mode="longBreak">LONG</button>
+      </div>
+      <div>
+        <div class="cycle-dots" id="cycleDots"></div>
+        <div class="total-time" id="totalTime">TOTAL 0 / 120</div>
+      </div>
       <div class="controls">
         <button class="btn ghost" id="resetBtn">RESET</button>
         <button class="btn" id="startBtn">START</button>
@@ -182,7 +184,7 @@
   function progressArcPath(remainingFraction) {
     const elapsedAngle = (1 - remainingFraction) * 360;
     if (360 - elapsedAngle <= 0.05) return '';
-    return describeArc(61, 61, 54, elapsedAngle, 360);
+    return describeArc(98, 98, 88, elapsedAngle, 360);
   }
 
   function durationFor(mode) {
