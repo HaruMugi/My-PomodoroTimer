@@ -33,7 +33,7 @@
     border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
   }
   .mode-btn.active { border-color: var(--accent); color: var(--accent); }
-  .main-row { display: flex; align-items: stretch; justify-content: center; gap: 20px; margin-top: 18px; }
+  .main-row { display: flex; align-items: stretch; justify-content: center; gap: 20px; margin-top: 8px; }
   .cycle-dots { display: flex; justify-content: center; gap: 5px; margin-bottom: 6px; }
   .cdot { width: 7px; height: 7px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
   .cdot.filled { background: var(--accent); border-color: var(--accent); }
@@ -45,7 +45,7 @@
   .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .time { font-size: 38px; letter-spacing: 0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
   .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.16em; color: var(--accent); text-transform: uppercase; margin-top: 4px; opacity: 0.8; }
-  .right-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px; }
+  .right-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 11px; padding-top: 4px; }
   .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.04em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
   .controls { display: flex; justify-content: center; gap: 8px; }
   .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; letter-spacing: 0.1em; padding: 11px 18px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
@@ -57,9 +57,9 @@
   .icon-btn:hover { opacity: 1; }
   .icon-btn.off { opacity: 0.3; }
   .gear {
-    position: absolute; top: 15px; left: 12px; height: 21px; line-height: 19px;
+    position: absolute; top: 23px; left: 14px; height: 21px; line-height: 19px;
     background: none; border: none; color: var(--text-muted); cursor: pointer;
-    font-size: 12px; opacity: 0.6; display: flex; align-items: center;
+    font-size: 12px; opacity: 0.6; display: flex; align-items: center; z-index: 2;
   }
   .gear:hover { opacity: 1; }
   .settings { display: none; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--track); text-align: left; font-family: 'Helvetica Neue', Arial, sans-serif; }
