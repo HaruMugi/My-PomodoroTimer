@@ -21,7 +21,7 @@
     font-family: 'Georgia', 'Times New Roman', serif; color: var(--text);
   }
   .card {
-    width: 250px; margin: 0; padding: 16px 14px 14px;
+    width: 220px; margin: 0; padding: 14px 12px 12px;
     background: var(--panel); border-radius: 4px; text-align: center; position: relative;
   }
   .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; }
@@ -31,24 +31,24 @@
     border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
   }
   .mode-btn.active { border-color: var(--accent); color: var(--accent); }
-  .main-row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .main-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
   .cycle-dots { display: flex; justify-content: center; gap: 4px; margin-bottom: 6px; }
   .cdot { width: 5px; height: 5px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
   .cdot.filled { background: var(--accent); border-color: var(--accent); }
   .cdot.current { box-shadow: 0 0 0 2px var(--sub); }
-  .ring-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+  .ring-wrap { position: relative; width: 88px; height: 88px; flex-shrink: 0; }
   svg { transform: none; }
   .ring-track { stroke: var(--track); fill: none; stroke-width: 4; }
   .ring-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: d 1s linear, stroke 0.3s ease; }
   .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .time { font-size: 19px; letter-spacing: 0.01em; color: var(--text); font-variant-numeric: tabular-nums; }
-  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 6px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-top: 2px; opacity: 0.8; }
-  .right-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8px; letter-spacing: 0.04em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .controls { display: flex; justify-content: center; gap: 5px; }
-  .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 8px; letter-spacing: 0.08em; padding: 5px 8px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
+  .time { font-size: 17px; letter-spacing: 0.01em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 6px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-top: 2px; opacity: 0.8; }
+  .right-col { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 7px; letter-spacing: 0.03em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .controls { display: flex; justify-content: center; gap: 4px; }
+  .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 7px; letter-spacing: 0.06em; padding: 4px 6px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
   .btn:hover { background: var(--accent); color: var(--panel); }
-  .btn.ghost { border-color: var(--accent-dim); color: var(--text-muted); padding: 5px 7px; }
+  .btn.ghost { border-color: var(--accent-dim); color: var(--text-muted); padding: 4px 6px; }
   .btn.ghost:hover { background: var(--accent-dim); color: var(--text); }
   .icon-row { display: flex; justify-content: center; gap: 14px; }
   .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; opacity: 0.55; transition: opacity 0.2s ease; padding: 2px; }
@@ -58,13 +58,13 @@
   .gear:hover { opacity: 1; }
   .settings { display: none; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--track); text-align: left; font-family: 'Helvetica Neue', Arial, sans-serif; }
   .settings.open { display: block; }
-  .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.03em; }
-  .stepper { display: flex; align-items: center; gap: 4px; }
-  .stepper button { width: 18px; height: 18px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); cursor: pointer; border-radius: 2px; font-size: 11px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
-  .row input[type="number"] { width: 40px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; padding: 3px 4px; border-radius: 2px; text-align: center; }
-  .color-input-group { display: flex; align-items: center; gap: 5px; }
-  .row input[type="color"] { width: 26px; height: 22px; border: 1px solid var(--accent-dim); background: none; border-radius: 2px; padding: 0; cursor: pointer; }
-  .row input[type="text"].hex { width: 68px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; padding: 3px 5px; border-radius: 2px; font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: 0.02em; }
+  .stepper { display: flex; align-items: center; gap: 3px; }
+  .stepper button { width: 16px; height: 16px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); cursor: pointer; border-radius: 2px; font-size: 10px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .row input[type="number"] { width: 32px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; padding: 2px 3px; border-radius: 2px; text-align: center; }
+  .color-input-group { display: flex; align-items: center; gap: 4px; }
+  .row input[type="color"] { width: 22px; height: 20px; border: 1px solid var(--accent-dim); background: none; border-radius: 2px; padding: 0; cursor: pointer; }
+  .row input[type="text"].hex { width: 56px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: 'Helvetica Neue', Arial, sans-serif; padding: 2px 4px; border-radius: 2px; font-size: 9px; letter-spacing: 0.02em; text-transform: uppercase; }
   .section-title { font-size: 9px; letter-spacing: 0.15em; color: var(--accent); opacity: 0.7; margin: 14px 0 8px; text-transform: uppercase; }
   select { background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; font-size: 11px; padding: 4px 6px; border-radius: 2px; flex: 1; margin-right: 6px; }
   .preset-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
@@ -85,8 +85,8 @@
   </div>
   <div class="main-row">
     <div class="ring-wrap">
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        <circle class="ring-track" cx="50" cy="50" r="44"></circle>
+      <svg width="88" height="88" viewBox="0 0 88 88">
+        <circle class="ring-track" cx="44" cy="44" r="39"></circle>
         <path class="ring-progress" id="ringProgress" d=""></path>
       </svg>
       <div class="time-display">
@@ -121,7 +121,7 @@
     <div class="section-title">Colors</div>
     <div class="row"><span>Background</span><div class="color-input-group"><input type="color" id="bgColor" value="#191919"><input type="text" class="hex" id="bgColorHex" value="#191919"></div></div>
     <div class="row"><span>Ring</span><div class="color-input-group"><input type="color" id="ringColor" value="#E8D5A8"><input type="text" class="hex" id="ringColorHex" value="#E8D5A8"></div></div>
-    <div class="row"><span>Sub (break ring)</span><div class="color-input-group"><input type="color" id="subColor" value="#1B3A4B"><input type="text" class="hex" id="subColorHex" value="#1B3A4B"></div></div>
+    <div class="row" title="Used for the ring color during Break and Long Break"><span>Sub</span><div class="color-input-group"><input type="color" id="subColor" value="#1B3A4B"><input type="text" class="hex" id="subColorHex" value="#1B3A4B"></div></div>
     <div class="row"><span>Accent</span><div class="color-input-group"><input type="color" id="accentColor" value="#E8D5A8"><input type="text" class="hex" id="accentColorHex" value="#E8D5A8"></div></div>
     <div class="row"><span>Text</span><div class="color-input-group"><input type="color" id="textColor" value="#F0E6D8"><input type="text" class="hex" id="textColorHex" value="#F0E6D8"></div></div>
     <div class="row"><span>Panel</span><div class="color-input-group"><input type="color" id="panelColor" value="#191919"><input type="text" class="hex" id="panelColorHex" value="#191919"></div></div>
@@ -175,7 +175,7 @@
   function progressArcPath(remainingFraction) {
     const elapsedAngle = (1 - remainingFraction) * 360;
     if (360 - elapsedAngle <= 0.05) return '';
-    return describeArc(50, 50, 44, elapsedAngle, 360);
+    return describeArc(44, 44, 39, elapsedAngle, 360);
   }
 
   function durationFor(mode) {
