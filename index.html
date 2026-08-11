@@ -458,9 +458,14 @@
   function fitScale() {
     cardEl.style.transform = 'scale(1)';
     const baseW = cardEl.offsetWidth;
-    if (!baseW) return;
+    const baseH = cardEl.offsetHeight;
+    if (!baseW || !baseH) return;
     const availW = document.documentElement.clientWidth;
-    const scale = availW / baseW;
+    const availH = document.documentElement.clientHeight;
+    const settingsOpen = document.getElementById('settings').classList.contains('open');
+    const scale = settingsOpen
+      ? availW / baseW
+      : Math.min(availW / baseW, availH / baseH);
     cardEl.style.transform = `scale(${Math.min(Math.max(scale, 0.3), 3)})`;
   }
   window.addEventListener('resize', fitScale);
