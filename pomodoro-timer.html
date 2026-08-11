@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Pomodoro</title>
+<style>
+  :root {
+    --bg: transparent;
+    --panel: #1A1512;
+    --accent: #E8D5A8;
+    --accent-dim: #6b5f45;
+    --track: #2A231D;
+    --sub: #1B3A4B;
+    --text: #F0E6D8;
+    --text-muted: #a89a86;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg);
+    font-family: 'Georgia', 'Times New Roman', serif; color: var(--text);
+  }
+  .card {
+    width: 340px; margin: 0 auto; padding: 26px 24px 20px;
+    background: var(--panel); border-radius: 4px; text-align: center; position: relative;
+  }
+  .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+  .mode-btn {
+    background: none; border: 1px solid var(--accent-dim); color: var(--text-muted);
+    font-family: inherit; font-size: 10px; letter-spacing: 0.1em; padding: 5px 10px;
+    border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
+  }
+  .mode-btn.active { border-color: var(--accent); color: var(--accent); }
+  .cycle-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+  .cdot { width: 7px; height: 7px; border-radius: 50%; background: var(--track); border: 1px solid var(--accent-dim); }
+  .cdot.filled { background: var(--accent); border-color: var(--accent); }
+  .cdot.current { box-shadow: 0 0 0 2px var(--sub); }
+  .ring-wrap { position: relative; width: 210px; height: 210px; margin: 0 auto 10px; }
+  svg { transform: rotate(-90deg); }
+  .ring-track { stroke: var(--track); fill: none; stroke-width: 4; }
+  .ring-progress { stroke: var(--accent); fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+  .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .time { font-size: 44px; letter-spacing: 0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.25em; color: var(--accent); text-transform: uppercase; margin-top: 6px; opacity: 0.8; }
+  .total-time { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+  .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 6px; }
+  .btn { background: none; border: 1px solid var(--accent); color: var(--accent); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.15em; padding: 9px 20px; border-radius: 2px; cursor: pointer; transition: all 0.2s ease; }
+  .btn:hover { background: var(--accent); color: var(--panel); }
+  .btn.ghost { border-color: var(--accent-dim); color: var(--text-muted); padding: 9px 14px; }
+  .btn.ghost:hover { background: var(--accent-dim); color: var(--text); }
+  .icon-row { display: flex; justify-content: center; gap: 14px; margin-top: 10px; }
+  .icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; opacity: 0.6; letter-spacing: 0.05em; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  .icon-btn:hover { opacity: 1; }
+  .gear { position: absolute; top: 10px; right: 12px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; opacity: 0.6; }
+  .gear:hover { opacity: 1; }
+  .settings { display: none; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--track); text-align: left; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  .settings.open { display: block; }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 11px; color: var(--text-muted); letter-spacing: 0.03em; }
+  .stepper { display: flex; align-items: center; gap: 4px; }
+  .stepper button { width: 18px; height: 18px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); cursor: pointer; border-radius: 2px; font-size: 11px; line-height: 1; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .row input[type="number"] { width: 40px; background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; padding: 3px 4px; border-radius: 2px; text-align: center; }
+  .row input[type="color"] { width: 30px; height: 22px; border: 1px solid var(--accent-dim); background: none; border-radius: 2px; padding: 0; cursor: pointer; }
+  .section-title { font-size: 9px; letter-spacing: 0.15em; color: var(--accent); opacity: 0.7; margin: 14px 0 8px; text-transform: uppercase; }
+  select { background: var(--track); border: 1px solid var(--accent-dim); color: var(--text); font-family: inherit; font-size: 11px; padding: 4px 6px; border-radius: 2px; flex: 1; margin-right: 6px; }
+  .preset-row { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+  .small-btn { background: none; border: 1px solid var(--accent-dim); color: var(--text-muted); font-size: 10px; padding: 4px 8px; border-radius: 2px; cursor: pointer; white-space: nowrap; }
+  .small-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <button class="gear" id="gearBtn" title="設定">&#9881;</button>
+  <div class="mode-row">
+    <button class="mode-btn active" data-mode="work">WORK</button>
+    <button class="mode-btn" data-mode="break">BREAK</button>
+    <button class="mode-btn" data-mode="longBreak">LONG</button>
+  </div>
+  <div class="cycle-dots" id="cycleDots"></div>
+  <div class="ring-wrap">
+    <svg width="210" height="210" viewBox="0 0 210 210">
+      <circle class="ring-track" cx="105" cy="105" r="95"></circle>
+      <circle class="ring-progress" id="ringProgress" cx="105" cy="105" r="95" stroke-dasharray="597" stroke-dashoffset="0"></circle>
+    </svg>
+    <div class="time-display">
+      <div class="time" id="timeText">25:00</div>
+      <div class="label" id="modeLabel">FOCUS</div>
+    </div>
+  </div>
+  <div class="total-time" id="totalTime">サイクル合計 -- 分</div>
+  <div class="controls">
+    <button class="btn ghost" id="resetBtn">RESET</button>
+    <button class="btn" id="startBtn">START</button>
+  </div>
+  <div class="icon-row">
+    <button class="icon-btn" id="muteBtn">🔊 音</button>
+    <button class="icon-btn" id="totalToggleBtn">👁 合計時間</button>
+  </div>
+  <div class="settings" id="settings">
+    <div class="section-title">時間設定(分)</div>
+    <div class="row"><span>作業</span><div class="stepper"><button data-target="workMin" data-delta="-1">−</button><input type="number" id="workMin" value="25" min="1" max="180"><button data-target="workMin" data-delta="1">+</button></div></div>
+    <div class="row"><span>休憩</span><div class="stepper"><button data-target="breakMin" data-delta="-1">−</button><input type="number" id="breakMin" value="5" min="1" max="120"><button data-target="breakMin" data-delta="1">+</button></div></div>
+    <div class="row"><span>長い休憩</span><div class="stepper"><button data-target="longBreakMin" data-delta="-1">−</button><input type="number" id="longBreakMin" value="15" min="1" max="180"><button data-target="longBreakMin" data-delta="1">+</button></div></div>
+    <div class="row"><span>長い休憩までのセッション数</span><div class="stepper"><button data-target="sessionsBeforeLong" data-delta="-1">−</button><input type="number" id="sessionsBeforeLong" value="4" min="1" max="12"><button data-target="sessionsBeforeLong" data-delta="1">+</button></div></div>
+    <div class="section-title">プリセット</div>
+    <div class="preset-row"><select id="presetSelect"><option value="">-- 選択 --</option></select><button class="small-btn" id="loadPresetBtn">読込</button><button class="small-btn" id="deletePresetBtn">削除</button></div>
+    <div class="preset-row"><button class="small-btn" id="savePresetBtn" style="width:100%">現在の設定を名前を付けて保存</button></div>
+    <div class="section-title">配色</div>
+    <div class="row"><span>アクセント色</span><input type="color" id="accentColor" value="#E8D5A8"></div>
+    <div class="row"><span>サブ色</span><input type="color" id="subColor" value="#1B3A4B"></div>
+    <div class="row"><span>パネル背景</span><input type="color" id="panelColor" value="#1A1512"></div>
+    <div class="row"><span>トラック色</span><input type="color" id="trackColor" value="#2A231D"></div>
+    <div class="row"><span>文字色</span><input type="color" id="textColor" value="#F0E6D8"></div>
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const STORAGE_KEY = 'pomodoro_settings_v1';
+  const PRESET_KEY = 'pomodoro_presets_v1';
+
+  const state = {
+    mode: 'work', workMin: 25, breakMin: 5, longBreakMin: 15, sessionsBeforeLong: 4,
+    remaining: 25 * 60, running: false, timer: null, sessionInCycle: 0, muted: false, showTotal: true
+  };
+
+  const timeText = document.getElementById('timeText');
+  const modeLabel = document.getElementById('modeLabel');
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const ring = document.getElementById('ringProgress');
+  const totalTimeEl = document.getElementById('totalTime');
+  const CIRC = 2 * Math.PI * 95;
+  ring.setAttribute('stroke-dasharray', CIRC);
+
+  function durationFor(mode) {
+    if (mode === 'work') return state.workMin * 60;
+    if (mode === 'break') return state.breakMin * 60;
+    return state.longBreakMin * 60;
+  }
+  function totalCycleMinutes() {
+    return state.workMin * state.sessionsBeforeLong + state.breakMin * (state.sessionsBeforeLong - 1) + state.longBreakMin;
+  }
+  function render() {
+    const m = Math.floor(state.remaining / 60).toString().padStart(2, '0');
+    const s = Math.floor(state.remaining % 60).toString().padStart(2, '0');
+    timeText.textContent = `${m}:${s}`;
+    modeLabel.textContent = state.mode === 'work' ? 'FOCUS' : state.mode === 'break' ? 'BREAK' : 'LONG BREAK';
+    const progress = 1 - state.remaining / durationFor(state.mode);
+    ring.setAttribute('stroke-dashoffset', CIRC * progress);
+    startBtn.textContent = state.running ? 'PAUSE' : 'START';
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === state.mode));
+    totalTimeEl.textContent = `サイクル合計 ${totalCycleMinutes()} 分`;
+    totalTimeEl.style.display = state.showTotal ? 'block' : 'none';
+    renderCycleDots();
+    document.title = state.running ? `${m}:${s} - ${modeLabel.textContent}` : 'Pomodoro';
+  }
+  function renderCycleDots() {
+    const wrap = document.getElementById('cycleDots');
+    wrap.innerHTML = '';
+    for (let i = 0; i < state.sessionsBeforeLong; i++) {
+      const d = document.createElement('div');
+      d.className = 'cdot' + (i < state.sessionInCycle ? ' filled' : '') + (i === state.sessionInCycle && state.mode === 'work' ? ' current' : '');
+      wrap.appendChild(d);
+    }
+  }
+
+  let audioCtx = null;
+  function beep(freq, duration) {
+    if (state.muted) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    } catch (e) {}
+  }
+
+  function tick() {
+    if (state.remaining > 0) {
+      state.remaining--;
+      if (state.remaining > 0 && state.remaining <= 2) beep(880, 0.15);
+      render();
+    }
+    if (state.remaining <= 0) {
+      beep(523, 0.4);
+      if (state.mode === 'work') {
+        state.sessionInCycle++;
+        state.mode = state.sessionInCycle >= state.sessionsBeforeLong ? 'longBreak' : 'break';
+      } else if (state.mode === 'longBreak') {
+        state.sessionInCycle = 0;
+        state.mode = 'work';
+      } else {
+        state.mode = 'work';
+      }
+      state.remaining = durationFor(state.mode);
+      render();
+    }
+  }
+
+  startBtn.addEventListener('click', () => {
+    state.running = !state.running;
+    if (state.running) {
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      state.timer = setInterval(tick, 1000);
+    } else {
+      clearInterval(state.timer);
+    }
+    render();
+  });
+  resetBtn.addEventListener('click', () => {
+    state.running = false;
+    clearInterval(state.timer);
+    state.remaining = durationFor(state.mode);
+    render();
+  });
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.running = false;
+      clearInterval(state.timer);
+      state.mode = btn.dataset.mode;
+      state.remaining = durationFor(state.mode);
+      render();
+    });
+  });
+  document.getElementById('gearBtn').addEventListener('click', () => {
+    document.getElementById('settings').classList.toggle('open');
+  });
+  document.getElementById('muteBtn').addEventListener('click', (e) => {
+    state.muted = !state.muted;
+    e.target.textContent = state.muted ? '🔇 音' : '🔊 音';
+    saveSettings();
+  });
+  document.getElementById('totalToggleBtn').addEventListener('click', () => {
+    state.showTotal = !state.showTotal;
+    render();
+    saveSettings();
+  });
+  ['workMin', 'breakMin', 'longBreakMin', 'sessionsBeforeLong'].forEach(id => {
+    document.getElementById(id).addEventListener('input', e => {
+      state[id] = Math.max(1, parseInt(e.target.value) || 1);
+      if (!state.running && (id === 'sessionsBeforeLong' ||
+          (id === 'workMin' && state.mode === 'work') ||
+          (id === 'breakMin' && state.mode === 'break') ||
+          (id === 'longBreakMin' && state.mode === 'longBreak'))) {
+        state.remaining = durationFor(state.mode);
+      }
+      render();
+      saveSettings();
+    });
+  });
+  document.querySelectorAll('.stepper button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const delta = parseInt(btn.dataset.delta);
+      const input = document.getElementById(target);
+      const newVal = Math.max(1, (parseInt(input.value) || 0) + delta);
+      input.value = newVal;
+      input.dispatchEvent(new Event('input'));
+    });
+  });
+
+  const colorMap = { accentColor: '--accent', subColor: '--sub', panelColor: '--panel', trackColor: '--track', textColor: '--text' };
+  Object.keys(colorMap).forEach(id => {
+    document.getElementById(id).addEventListener('input', e => {
+      root.style.setProperty(colorMap[id], e.target.value);
+      saveSettings();
+    });
+  });
+
+  function currentSettingsObj() {
+    return {
+      workMin: state.workMin, breakMin: state.breakMin, longBreakMin: state.longBreakMin,
+      sessionsBeforeLong: state.sessionsBeforeLong, muted: state.muted, showTotal: state.showTotal,
+      colors: {
+        accent: document.getElementById('accentColor').value,
+        sub: document.getElementById('subColor').value,
+        panel: document.getElementById('panelColor').value,
+        track: document.getElementById('trackColor').value,
+        text: document.getElementById('textColor').value
+      }
+    };
+  }
+  function saveSettings() { localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSettingsObj())); }
+  function applySettingsObj(obj) {
+    state.workMin = obj.workMin; state.breakMin = obj.breakMin;
+    state.longBreakMin = obj.longBreakMin; state.sessionsBeforeLong = obj.sessionsBeforeLong;
+    state.muted = obj.muted || false; state.showTotal = obj.showTotal !== false;
+    document.getElementById('workMin').value = obj.workMin;
+    document.getElementById('breakMin').value = obj.breakMin;
+    document.getElementById('longBreakMin').value = obj.longBreakMin;
+    document.getElementById('sessionsBeforeLong').value = obj.sessionsBeforeLong;
+    document.getElementById('muteBtn').textContent = state.muted ? '🔇 音' : '🔊 音';
+    if (obj.colors) {
+      Object.keys(colorMap).forEach(id => {
+        const key = id.replace('Color','');
+        if (obj.colors[key]) {
+          document.getElementById(id).value = obj.colors[key];
+          root.style.setProperty(colorMap[id], obj.colors[key]);
+        }
+      });
+    }
+    state.sessionInCycle = 0;
+    state.remaining = durationFor(state.mode);
+    render();
+  }
+  function loadSettings() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) { try { applySettingsObj(JSON.parse(raw)); } catch (e) {} }
+  }
+
+  function getPresets() { try { return JSON.parse(localStorage.getItem(PRESET_KEY)) || {}; } catch (e) { return {}; } }
+  function savePresets(p) { localStorage.setItem(PRESET_KEY, JSON.stringify(p)); }
+  function refreshPresetSelect() {
+    const sel = document.getElementById('presetSelect');
+    const presets = getPresets();
+    sel.innerHTML = '<option value="">-- 選択 --</option>';
+    Object.keys(presets).forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('savePresetBtn').addEventListener('click', () => {
+    const name = prompt('プリセット名を入力してください');
+    if (!name) return;
+    const presets = getPresets();
+    presets[name] = currentSettingsObj();
+    savePresets(presets);
+    refreshPresetSelect();
+    document.getElementById('presetSelect').value = name;
+  });
+  document.getElementById('loadPresetBtn').addEventListener('click', () => {
+    const name = document.getElementById('presetSelect').value;
+    if (!name) return;
+    const presets = getPresets();
+    if (presets[name]) applySettingsObj(presets[name]);
+  });
+  document.getElementById('deletePresetBtn').addEventListener('click', () => {
+    const name = document.getElementById('presetSelect').value;
+    if (!name) return;
+    if (!confirm(`プリセット「${name}」を削除しますか？`)) return;
+    const presets = getPresets();
+    delete presets[name];
+    savePresets(presets);
+    refreshPresetSelect();
+  });
+
+  loadSettings();
+  refreshPresetSelect();
+  render();
+</script>
+</body>
+</html>
