@@ -36,7 +36,7 @@
   .cdot.filled { background: var(--accent); border-color: var(--accent); }
   .cdot.current { box-shadow: 0 0 0 2px var(--sub); }
   .ring-wrap { position: relative; width: 210px; height: 210px; margin: 0 auto 10px; }
-  svg { transform: rotate(-90deg) scaleX(-1); }
+  svg { transform: none; }
   .ring-track { stroke: var(--track); fill: none; stroke-width: 4; }
   .ring-progress { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s ease; }
   .time-display { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -85,7 +85,7 @@
   <div class="ring-wrap">
     <svg width="210" height="210" viewBox="0 0 210 210">
       <circle class="ring-track" cx="105" cy="105" r="95"></circle>
-      <circle class="ring-progress" id="ringProgress" cx="105" cy="105" r="95" stroke-dasharray="597" stroke-dashoffset="0"></circle>
+      <path class="ring-progress" id="ringProgress" d=""></path>
     </svg>
     <div class="time-display">
       <div class="time" id="timeText">25:00</div>
@@ -146,8 +146,30 @@
   const resetBtn = document.getElementById('resetBtn');
   const ring = document.getElementById('ringProgress');
   const totalTimeEl = document.getElementById('totalTime');
-  const CIRC = 2 * Math.PI * 95;
-  ring.setAttribute('stroke-dasharray', CIRC);
+
+  function polarToCartesian(cx, cy, r, angleDeg) {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+  function describeArc(cx, cy, r, startAngle, endAngle) {
+    if (endAngle - startAngle >= 359.99) {
+      const mid = startAngle + 180;
+      const p0 = polarToCartesian(cx, cy, r, startAngle);
+      const pMid = polarToCartesian(cx, cy, r, mid);
+      return `M ${p0.x} ${p0.y} A ${r} ${r} 0 1 1 ${pMid.x} ${pMid.y} A ${r} ${r} 0 1 1 ${p0.x} ${p0.y}`;
+    }
+    const start = polarToCartesian(cx, cy, r, startAngle);
+    const end = polarToCartesian(cx, cy, r, endAngle);
+    const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
+  }
+  // Draws the REMAINING-time arc: starts at the clockwise-moving boundary
+  // (which sweeps from 12 o'clock as time elapses) and always closes back at 12.
+  function progressArcPath(remainingFraction) {
+    const elapsedAngle = (1 - remainingFraction) * 360;
+    if (360 - elapsedAngle <= 0.05) return '';
+    return describeArc(105, 105, 95, elapsedAngle, 360);
+  }
 
   function durationFor(mode) {
     if (mode === 'work') return state.workMin * 60;
@@ -166,8 +188,8 @@
     const s = Math.floor(state.remaining % 60).toString().padStart(2, '0');
     timeText.textContent = `${m}:${s}`;
     modeLabel.textContent = state.mode === 'work' ? 'FOCUS' : state.mode === 'break' ? 'BREAK' : 'LONG';
-    const progress = 1 - state.remaining / durationFor(state.mode);
-    ring.setAttribute('stroke-dashoffset', CIRC * progress);
+    const remainingFraction = state.remaining / durationFor(state.mode);
+    ring.setAttribute('d', progressArcPath(remainingFraction));
     ring.style.stroke = state.mode === 'work'
       ? document.getElementById('ringColor').value
       : document.getElementById('subColor').value;
