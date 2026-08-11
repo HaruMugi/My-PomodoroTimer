@@ -17,12 +17,14 @@
   }
   * { box-sizing: border-box; }
   html, body {
-    margin: 0; padding: 0; background: var(--bg);
+    margin: 0; padding: 0; background: var(--bg); width: 100%; height: 100%; overflow: hidden;
     font-family: 'Georgia', 'Times New Roman', serif; color: var(--text);
+    display: flex; align-items: center; justify-content: flex-start;
   }
   .card {
     width: 290px; margin: 0; padding: 26px 20px 15px 18px;
     background: var(--panel); border-radius: 4px; text-align: center; position: relative;
+    transform-origin: top left; flex-shrink: 0;
   }
   .mode-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
   .mode-btn {
@@ -76,7 +78,7 @@
 </head>
 <body>
 
-<div class="card">
+<div class="card" id="card">
   <button class="gear" id="gearBtn" title="Settings">&#9881;</button>
   <div class="mode-row">
     <button class="mode-btn active" data-mode="work">WORK</button>
@@ -287,6 +289,7 @@
   });
   document.getElementById('gearBtn').addEventListener('click', () => {
     document.getElementById('settings').classList.toggle('open');
+    fitScale();
   });
   document.getElementById('muteBtn').addEventListener('click', () => {
     state.muted = !state.muted;
@@ -443,6 +446,26 @@
   loadSettings();
   refreshPresetSelect();
   render();
+
+  // --- auto-scale to fit the embed container ---
+  const cardEl = document.getElementById('card');
+  function fitScale() {
+    cardEl.style.transform = 'scale(1)';
+    const baseW = cardEl.offsetWidth;
+    const baseH = cardEl.offsetHeight;
+    if (!baseW || !baseH) return;
+    const availW = document.documentElement.clientWidth;
+    const availH = document.documentElement.clientHeight;
+    const scale = Math.min(availW / baseW, availH / baseH, 3);
+    cardEl.style.transform = `scale(${Math.max(scale, 0.3)})`;
+  }
+  window.addEventListener('resize', fitScale);
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitScale).observe(document.documentElement);
+  }
+  window.addEventListener('load', fitScale);
+  fitScale();
+
 </script>
 </body>
 </html>
